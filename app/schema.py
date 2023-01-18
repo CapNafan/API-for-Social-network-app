@@ -3,9 +3,19 @@ from typing import Optional
 from datetime import datetime
 
 
-class PostSchema(BaseModel):
+class PostBase(BaseModel):
     title: str
     content: str
+
+
+class PostCreate(PostBase):
+    pass
+
+
+class PostSchema(PostBase):
+    id: int
+    created_at: datetime
+    owner_id: int
 
     class Config:
         orm_mode = True

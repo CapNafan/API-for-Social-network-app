@@ -3,7 +3,7 @@ from fastapi import FastAPI
 import uvicorn
 
 from app.models import Base
-from app.database import engine, get_db
+from app.database import engine
 from app.routers import post, user, auth
 
 
