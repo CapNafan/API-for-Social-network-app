@@ -1,7 +1,7 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 
-from app.models import Like, Dislike
+from app.models import Like, Dislike, Post
 from app.schema import LikeSchema, DislikeSchema
 from app.database import get_db
 from app.oauth2 import get_current_user
@@ -27,6 +27,11 @@ def like(vote: LikeSchema, db: Session = Depends(get_db), current_user: int = De
 
     else:
         new_like = Like(post_id=vote.post_id, user_id=current_user.id)
+        like_self = db.query(Post).filter(Post.id == new_like.post_id, Post.owner_id == new_like.user_id).first()
+
+        if like_self:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden to vote for one's post")
+
         db.add(new_like)
         db.commit()
 
@@ -47,6 +52,12 @@ def dislike(vote: DislikeSchema, db: Session = Depends(get_db), current_user: in
 
     else:
         new_dislike = Dislike(post_id=vote.post_id, user_id=current_user.id)
+
+        dislike_self = db.query(Post).filter(Post.id == new_dislike.post_id, Post.owner_id == new_dislike.user_id).first()
+
+        if dislike_self:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Forbidden to vote for one's post")
+
         db.add(new_dislike)
         db.commit()
 
