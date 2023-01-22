@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int
 
     class Config:
-        env_file = ".env"
+        env_file = ".env"  # loading credentials from .env file
         env_file_encoding = 'utf-8'
 
 

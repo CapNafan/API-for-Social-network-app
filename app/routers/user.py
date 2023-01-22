@@ -15,7 +15,6 @@ router = APIRouter(
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserOutSchema)
 def create_user(user: UserCreateSchema, db: Session = Depends(get_db)):
-    # TODO check if user email already exists in db
     hashed_password = utils.hash_string(user.password)
     user.password = hashed_password
     new_user = User(**user.dict())
